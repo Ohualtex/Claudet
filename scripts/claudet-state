@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# claudet-state — write the pet's state for the desktop app.
+#
+# Usage:
+#   claudet-state working
+#   claudet-state done
+#   claudet-state idle
+#
+# Writes one word into ~/.config/claudet/state. The desktop app
+# watches this file and reacts.
+set -euo pipefail
+
+state="${1:-}"
+case "$state" in
+  working|done|idle|wander|sleep) ;;
+  *)
+    echo "usage: claudet-state {working|done|idle}" >&2
+    exit 2
+    ;;
+esac
+
+dir="$HOME/.config/claudet"
+mkdir -p "$dir"
+# Atomic-ish write so the file watcher gets a single coherent update.
+tmp="$(mktemp "$dir/.state.XXXXXX")"
+printf '%s' "$state" > "$tmp"
+mv "$tmp" "$dir/state"

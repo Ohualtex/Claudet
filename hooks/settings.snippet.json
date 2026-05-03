@@ -1,0 +1,25 @@
+{
+  "_comment": "Merge the 'hooks' block below into ~/.claude/settings.json. The install-hooks.sh script does this for you.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/bin/claudet-state working"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/bin/claudet-state done"
+          }
+        ]
+      }
+    ]
+  }
+}

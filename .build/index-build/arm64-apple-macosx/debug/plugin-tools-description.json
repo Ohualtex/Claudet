@@ -1,0 +1,292 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.Claudet-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Library/Developer/CommandLineTools/usr/bin/swiftc",
+      "fileList" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/sources",
+      "importPath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/ClaudeAppMonitor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Notifier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetWindow.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Sprites.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/StateWatcher.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/main.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "Claudet",
+      "moduleOutputPath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Modules/Claudet.swiftmodule",
+      "objects" : [
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/AppDelegate.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/ClaudeAppMonitor.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/Notifier.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/PetView.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/PetWindow.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/Sprites.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/StateWatcher.swift.o",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/main.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-swift-version",
+        "5",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-I",
+        "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+        "-L",
+        "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+        "-plugin-path",
+        "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "claudet"
+      ],
+      "outputFileMapPath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Modules/Claudet.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/AppDelegate.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/ClaudeAppMonitor.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Notifier.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetView.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetWindow.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Sprites.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/StateWatcher.swift",
+        "/Users/Miyamura/Desktop/claudet/Sources/Claudet/main.swift"
+      ],
+      "tempsPath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "Claudet" : [
+      "/Library/Developer/CommandLineTools/usr/bin/swiftc",
+      "-module-name",
+      "Claudet",
+      "-package-name",
+      "claudet",
+      "-c",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/AppDelegate.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/ClaudeAppMonitor.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Notifier.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetView.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetWindow.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Sprites.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/StateWatcher.swift",
+      "/Users/Miyamura/Desktop/claudet/Sources/Claudet/main.swift",
+      "-I",
+      "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-swift-version",
+      "5",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-I",
+      "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+      "-L",
+      "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+      "-plugin-path",
+      "/Library/Developer/CommandLineTools/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "claudet",
+      "-driver-use-frontend-path",
+      "/Library/Developer/CommandLineTools/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "Claudet" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/ClaudeAppMonitor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Notifier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/PetWindow.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/Sprites.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/StateWatcher.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/Miyamura/Desktop/claudet/Sources/Claudet/main.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/Claudet.build/sources"
+    },
+    "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Library/Developer/CommandLineTools/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/Miyamura/Desktop/claudet/.build/index-build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
+    }
+  }
+}

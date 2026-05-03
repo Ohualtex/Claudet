@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:claudet}",
+            "name": "Debug claudet",
+            "target": "claudet",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug claudet"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:claudet}",
+            "name": "Release claudet",
+            "target": "claudet",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release claudet"
+        }
+    ]
+}
