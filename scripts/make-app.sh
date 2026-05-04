@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Build the Claudet.app bundle in build/.
+# build/ klasöründe Claudet.app bundle'ını derle.
 # Doing this lets macOS treat us as a real app: stable bundle ID,
 # proper Dock/agent behavior, and visibility to screenshot allowlists.
+# Bu sayede macOS bizi gerçek bir uygulama olarak görür: kararlı bundle ID,
+# düzgün Dock/agent davranışı ve ekran görüntüsü izin listelerinde görünürlük.
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
@@ -40,9 +43,12 @@ cat > "$app_dir/Contents/Info.plist" <<'PLIST'
 PLIST
 
 # Re-stamp signature so Launch Services picks up the bundle id cleanly.
+# İmzayı yeniden bas ki Launch Services bundle id'yi temiz şekilde alsın.
 codesign --force --sign - "$app_dir" >/dev/null 2>&1 || true
 
 # Tell Launch Services about the app so screenshot allowlists & open -a work.
+# Launch Services'e uygulamayı bildir; ekran görüntüsü izin listeleri ve
+# `open -a` çalışsın diye.
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
   -f "$app_dir" 2>/dev/null || true
 

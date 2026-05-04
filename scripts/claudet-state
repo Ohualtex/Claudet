@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 # claudet-state — write the pet's state for the desktop app.
+# claudet-state — masaüstü uygulaması için pet'in durumunu yazar.
 #
-# Usage:
+# Usage / Kullanım:
 #   claudet-state working
 #   claudet-state done
 #   claudet-state idle
 #
 # Writes one word into ~/.config/claudet/state. The desktop app
 # watches this file and reacts.
+# ~/.config/claudet/state içine tek bir kelime yazar. Masaüstü
+# uygulaması bu dosyayı izler ve tepki verir.
 set -euo pipefail
 
 state="${1:-}"
@@ -22,6 +25,7 @@ esac
 dir="$HOME/.config/claudet"
 mkdir -p "$dir"
 # Atomic-ish write so the file watcher gets a single coherent update.
+# Atomic'e yakın yazım — file watcher tek bir tutarlı güncelleme alsın diye.
 tmp="$(mktemp "$dir/.state.XXXXXX")"
 printf '%s' "$state" > "$tmp"
 mv "$tmp" "$dir/state"

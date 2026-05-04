@@ -7,6 +7,8 @@ final class PetWindow: NSWindow {
         let view = PetView(frame: NSRect(origin: .zero, size: size))
         // 1 cell = 1 art-pixel of the source character. pixelSize = 6
         // keeps the rendered character around marketing-video size.
+        // 1 hücre = kaynak karakterin 1 sanat-pikseli. pixelSize = 6
+        // render edilen karakteri tanıtım videosu boyutuna yakın tutar.
         view.pixelSize = 6
         self.petView = view
         super.init(
@@ -24,6 +26,7 @@ final class PetWindow: NSWindow {
         collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]
         contentView = view
         // Place in lower-right area of the main screen by default.
+        // Varsayılan olarak ana ekranın sağ-alt bölgesine yerleştir.
         if let screen = NSScreen.main {
             let frame = screen.visibleFrame
             let x = frame.maxX - size.width - 40

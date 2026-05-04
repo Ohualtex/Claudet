@@ -7,9 +7,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Hide Dock icon — this is a desktop accessory, not a regular app.
+        // Dock simgesini gizle — bu bir masaüstü aksesuarı, normal uygulama değil.
         NSApp.setActivationPolicy(.accessory)
 
         // Sized for 24×15 sprite canvas at pixelSize = 6 (144×90 render).
+        // 24×15 sprite canvas için boyutlandırıldı, pixelSize = 6 (144×90 render).
         let size = NSSize(width: 170, height: 130)
         window = PetWindow(size: size)
         window.orderFrontRegardless()
@@ -17,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setupStatusItem()
 
         // Watch Claude desktop app foreground state to reposition the pet.
+        // Pet'i yeniden konumlandırmak için Claude masaüstü uygulamasının ön plan durumunu izle.
         claudeMonitor.onChange = { [weak self] isClaude, app in
             self?.handleClaudeForegroundChange(isClaude: isClaude, app: app)
         }
@@ -27,7 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         claudeMonitor.stop()
     }
 
-    // MARK: - Behavior
+    // MARK: - Behavior / Davranış
 
     private func handleClaudeForegroundChange(isClaude: Bool, app: NSRunningApplication?) {
         guard let screen = NSScreen.main else { return }
@@ -36,6 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         if isClaude {
             // Snug to the lower-right of the screen — visually next to Claude.
+            // Ekranın sağ-altına yapıştır — görsel olarak Claude'un yanında.
             origin = NSPoint(
                 x: visible.maxX - window.frame.width - 24,
                 y: visible.minY + 24
@@ -43,6 +47,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             // Wander to a slightly more central spot when Claude is hidden,
             // so the pet feels like it stepped out onto the desktop.
+            // Claude gizliyken biraz daha merkezi bir noktaya kay,
+            // böylece pet sanki masaüstüne çıkmış gibi hissedilsin.
             origin = NSPoint(
                 x: visible.midX - window.frame.width / 2,
                 y: visible.minY + 80
@@ -51,7 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.animator().setFrameOrigin(origin)
     }
 
-    // MARK: - Status item (menu bar)
+    // MARK: - Status item (menu bar) / Durum öğesi (menü çubuğu)
 
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)

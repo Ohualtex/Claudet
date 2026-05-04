@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 # Install the claudet-state helper into ~/.local/bin and merge the
 # working/done hooks into ~/.claude/settings.json.
+# claudet-state yardımcısını ~/.local/bin'e kur ve working/done hook'larını
+# ~/.claude/settings.json içine merge et.
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # 1) Install the state-setter helper on PATH
+# 1) State yazıcı yardımcıyı PATH üzerine kur
 mkdir -p "$HOME/.local/bin"
 install -m 0755 "$repo_dir/scripts/claudet-state" "$HOME/.local/bin/claudet-state"
 echo "Installed: $HOME/.local/bin/claudet-state"
 
 # 2) Merge hooks into ~/.claude/settings.json (creating it if needed)
+# 2) Hook'ları ~/.claude/settings.json'a merge et (gerekirse oluştur)
 settings="$HOME/.claude/settings.json"
 mkdir -p "$HOME/.claude"
 if [ ! -f "$settings" ]; then

@@ -61,10 +61,13 @@ final class PetView: NSView {
     }
 
     // Required for window dragging via the view
+    // View üzerinden pencere sürükleme için gerekli
     override var mouseDownCanMoveWindow: Bool { true }
 
     // Right-click on the pet shows a small menu so it can be quit even
     // when the menu-bar item isn't visible.
+    // Pet'e sağ-tıklayınca küçük bir menü açılır; menü çubuğu öğesi
+    // görünmese bile uygulamadan çıkılabilsin diye.
     override func menu(for event: NSEvent) -> NSMenu? {
         let menu = NSMenu()
         let quitItem = NSMenuItem(title: "Quit Claude\u{2019}t", action: #selector(quitApp), keyEquivalent: "q")

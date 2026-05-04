@@ -1,5 +1,5 @@
 {
-  "_comment": "Merge the 'hooks' block below into ~/.claude/settings.json. The install-hooks.sh script does this for you.",
+  "_comment": "Merge the 'hooks' block below into ~/.claude/settings.json. The install-hooks.sh script does this for you. / Aşağıdaki 'hooks' bloğunu ~/.claude/settings.json içine merge edin. install-hooks.sh script'i bunu sizin için yapar.",
   "hooks": {
     "UserPromptSubmit": [
       {

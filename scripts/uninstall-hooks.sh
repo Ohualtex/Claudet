@@ -2,6 +2,9 @@
 # Remove claudet hooks from ~/.claude/settings.json and uninstall the
 # helper script. Leaves any other hooks alone. Also removes any legacy
 # friendly-claude-state hooks installed under earlier project names.
+# claudet hook'larını ~/.claude/settings.json'dan kaldır ve yardımcı
+# script'i sil. Diğer hook'lara dokunmaz. Ayrıca eski proje adları
+# altında kurulmuş friendly-claude-state hook'larını da temizler.
 set -euo pipefail
 
 settings="$HOME/.claude/settings.json"
@@ -14,7 +17,7 @@ with open(path) as f:
 hooks = cfg.get("hooks", {})
 helpers = [
     os.path.expandvars("$HOME/.local/bin/claudet-state"),
-    os.path.expandvars("$HOME/.local/bin/friendly-claude-state"),  # legacy
+    os.path.expandvars("$HOME/.local/bin/friendly-claude-state"),  # legacy / eski
 ]
 removed = 0
 for event in list(hooks.keys()):

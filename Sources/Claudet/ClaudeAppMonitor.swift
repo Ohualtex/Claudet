@@ -3,6 +3,10 @@ import AppKit
 // Watches frontmost-app changes and reports whether the Claude desktop
 // app is currently active. Also exposes the bundle identifier list we
 // recognize as "Claude" so the same logic is used everywhere.
+// Ön plandaki uygulama değişikliklerini izler ve Claude masaüstü
+// uygulamasının şu anda aktif olup olmadığını bildirir. Ayrıca
+// "Claude" olarak tanıdığımız bundle identifier listesini açığa çıkarır,
+// böylece aynı mantık her yerde kullanılır.
 final class ClaudeAppMonitor {
     static let claudeBundleIDs: Set<String> = [
         "com.anthropic.claudefordesktop",
@@ -30,6 +34,7 @@ final class ClaudeAppMonitor {
         observers = [activate, deactivate]
 
         // Emit the current state immediately
+        // Mevcut durumu hemen yayınla
         let frontmost = NSWorkspace.shared.frontmostApplication
         emit(for: frontmost)
     }
@@ -44,6 +49,8 @@ final class ClaudeAppMonitor {
         let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
         // For activate, this app is now frontmost. For deactivate, we
         // need to ask who the frontmost is now.
+        // Aktivasyon için, bu uygulama artık ön planda. Deaktivasyon için
+        // ön planda şu anda kim olduğunu sormamız gerekir.
         let frontmost: NSRunningApplication?
         if note.name == NSWorkspace.didActivateApplicationNotification {
             frontmost = app
