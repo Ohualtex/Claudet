@@ -5,17 +5,10 @@ import AppKit
 // Claudet pet'i için pixel-art sprite'lar, 24×15 hücreli grid üzerinde çizilir.
 // Her hücre `pixelSize` puanlık bir kare olarak render edilir (bkz. PetView).
 
-enum PetState: String {
-    case idle
-}
-
 enum SpriteCell: Character {
     case empty = "."
     case body = "O"
     case eye = "E"
-    case mouth = "M"
-    case sparkle = "Z"
-    case sparkleHi = "B"
 }
 
 struct SpriteFrame {
@@ -74,31 +67,17 @@ enum Sprites {
             "........................",
         ], durationMs: 110),
     ]
-
-    static func frames(for state: PetState) -> [SpriteFrame] {
-        switch state {
-        case .idle: return idle
-        }
-    }
 }
 
-// Three-color palette retained as a starting point for future sprites.
-// Gelecekteki sprite'lar için başlangıç noktası olarak korunan 3 renkli palet.
 enum Palette {
-    static let body     = NSColor(srgbRed: 216.0/255, green: 118.0/255, blue: 85.0/255, alpha: 1.0)
-    static let eye      = NSColor(srgbRed: 12.0/255,  green: 12.0/255,  blue: 12.0/255, alpha: 1.0)
-    static let mouth    = NSColor(srgbRed: 12.0/255,  green: 12.0/255,  blue: 12.0/255, alpha: 1.0)
-    static let sparkle  = NSColor(srgbRed: 1.00, green: 0.95, blue: 0.55, alpha: 1.0)
-    static let sparkleH = NSColor(srgbRed: 1.00, green: 0.85, blue: 0.40, alpha: 1.0)
+    static let body = NSColor(srgbRed: 216.0/255, green: 118.0/255, blue: 85.0/255, alpha: 1.0)
+    static let eye  = NSColor(srgbRed: 12.0/255,  green: 12.0/255,  blue: 12.0/255, alpha: 1.0)
 
     static func color(for cell: SpriteCell) -> NSColor? {
         switch cell {
-        case .empty:     return nil
-        case .body:      return body
-        case .eye:       return eye
-        case .mouth:     return mouth
-        case .sparkle:   return sparkle
-        case .sparkleHi: return sparkleH
+        case .empty: return nil
+        case .body:  return body
+        case .eye:   return eye
         }
     }
 }

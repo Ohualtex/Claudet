@@ -1,26 +1,22 @@
 # Claudet
 
-A tiny macOS desktop pet that reacts to what Claude Code is doing.
+A tiny pixel-art pet that sits in the corner of your macOS desktop and blinks at you.
 
-A pixel-art Claude mascot sits in the lower-right corner of your screen. It hunches over while Claude Code is working on a prompt, then hops with a sparkle and pings you with a notification when it's done — so you can switch to another tab without missing the moment a long task finishes.
+The pet snaps to the lower-right of the screen when the Claude desktop app is in the foreground, and drifts toward the centre when Claude is hidden. There are no other behaviours — no hooks, no notifications, no state machine. Pure decoration.
 
 ## Requirements
 
 - macOS 13+
 - Swift 5.9+ (Xcode command-line tools)
-- Python 3 (only used by the hook installer script)
 
 ## Install
 
 ```sh
-git clone <this repo> ~/Desktop/Claudet
+git clone https://github.com/Ohualtex/Claudet.git ~/Desktop/Claudet
 cd ~/Desktop/Claudet
 
 # Build the .app bundle
 ./scripts/make-app.sh
-
-# Wire up the Claude Code hooks
-./scripts/install-hooks.sh
 
 # Launch
 open build/Claudet.app
@@ -28,45 +24,11 @@ open build/Claudet.app
 
 `make-app.sh` produces `build/Claudet.app` (bundle id `desktop.claudet.pet`, `LSUIElement` so it stays out of the Dock) and registers it with Launch Services.
 
-`install-hooks.sh`:
-
-1. Copies `scripts/claudet-state` to `~/.local/bin/claudet-state`.
-2. Idempotently merges two hooks into `~/.claude/settings.json`:
-   - `UserPromptSubmit` → `claudet-state working`
-   - `Stop` → `claudet-state done`
-
 For a quick dev run without bundling, use `./scripts/run.sh` — it builds with `swift build -c release` into `/tmp/claudet-build` and execs the binary directly.
 
 ## How it works
 
-```
-Claude Code hook  ->  ~/.local/bin/claudet-state working|done
-                          |
-                          v
-                  ~/.config/claudet/state   (atomic mktemp + mv)
-                          |
-                          v
-                StateWatcher (DispatchSource)
-                          |
-                          v
-                    PetView.transition(...)
-```
-
-`StateWatcher` re-attaches across atomic renames, so it survives the helper's `mv` writes without losing events.
-
-`ClaudeAppMonitor` separately watches `NSWorkspace` activation events. When the Claude desktop app comes forward, the pet snaps to the lower-right next to it; when Claude is hidden, it drifts toward the center of the screen.
-
-## States
-
-| State     | Trigger                               | Animation                         |
-| --------- | ------------------------------------- | --------------------------------- |
-| `idle`    | default; also after `done` finishes   | standing forward, slow blink      |
-| `working` | `UserPromptSubmit` hook               | hunched, head dipping             |
-| `done`    | `Stop` hook (only if previously working) | hop + sparkle + smile, then idle |
-| `wander`  | manual / future use                   | walking, alternating legs         |
-| `sleep`   | manual / future use                   | closed eyes, floating Z's         |
-
-The status-bar menu and right-clicking the pet both expose Idle / Working / Done / Quit, which is enough to test all transitions without invoking Claude Code.
+The `PetView` runs a frame timer and cycles through the `idle` sprite frames forever (eyes-open ↔ blink). `ClaudeAppMonitor` watches `NSWorkspace` activation events and repositions the borderless floating window when the Claude desktop app comes forward or leaves the foreground.
 
 ## Sprites
 
@@ -74,17 +36,9 @@ All sprites live in `Sources/Claudet/Sprites.swift` as plain string arrays on a 
 
 ```
 . = empty   O = body (coral)   E = eye/dark
-M = mouth   Z = sparkle        B = sparkle highlight
 ```
 
-Strict styling rules (do not break these when editing):
-
-- One flat coral body color — **no rim, no inner shadow, no underside darkening**.
-- Eyes are 2×2 dark blocks near the top of the head.
-- Arms are 3×3 blocks at each side, just below the eye row.
-- Legs are 1 cell wide × 2 rows tall, four legs with a wider middle gap.
-
-The palette is three colors only: body `rgb(216, 118, 85)`, dark `rgb(12, 12, 12)`, sparkle yellow.
+Three colors only — no rim, no inner shadow, no underside darkening. Body is the literal `rgb(216, 118, 85)` sample from the original Claude Code marketing video; eye is `rgb(12, 12, 12)`.
 
 ## Project layout
 
@@ -92,33 +46,90 @@ The palette is three colors only: body `rgb(216, 118, 85)`, dark `rgb(12, 12, 12
 Package.swift                  Swift package manifest
 Sources/Claudet/
   main.swift                   NSApplication entry
-  AppDelegate.swift            wires up window, monitor, watcher, status item
+  AppDelegate.swift            window + monitor + status item wiring
   PetWindow.swift              borderless transparent floating NSWindow
   PetView.swift                pixel renderer + frame timer + right-click menu
   Sprites.swift                sprite frames + palette
-  StateWatcher.swift           watches ~/.config/claudet/state
   ClaudeAppMonitor.swift       tracks Claude desktop app foreground
-  Notifier.swift               osascript-based user notifications
-hooks/settings.snippet.json    reference snippet for ~/.claude/settings.json
 scripts/
-  claudet-state                writes the state file
-  install-hooks.sh             installs helper + merges hooks
-  uninstall-hooks.sh           reverses install-hooks.sh
   run.sh                       build & run for development
   make-app.sh                  build the .app bundle
 ```
 
-## Uninstall
+## Quit
 
-```sh
-./scripts/uninstall-hooks.sh
-rm -rf build/Claudet.app ~/.config/claudet
-```
-
-`uninstall-hooks.sh` removes Claudet's hook entries from `~/.claude/settings.json` (leaving any other hooks alone) and deletes `~/.local/bin/claudet-state`. It also cleans up the legacy `friendly-claude-state` helper from earlier project names.
+Right-click the pet → **Quit Claude't**, or click the menu-bar 🟧 icon → **Quit**.
 
 ## Notes
 
 - The build path defaults to `/tmp/claudet-build` because Spotlight/iCloud-managed folders can corrupt Swift's SQLite-backed build cache. Override with `CLAUDET_BUILD_DIR`.
-- Notifications go through `osascript` rather than `UNUserNotificationCenter` so they work whether or not the binary is wrapped in an `.app` bundle.
 - The window uses `[.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]` so the pet follows you across spaces without being captured by Mission Control or window cycling.
+
+---
+
+# Claudet (Türkçe)
+
+macOS masaüstünüzün köşesinde durup size göz kırpan minik bir pixel-art evcil hayvan.
+
+Pet, Claude masaüstü uygulaması ön plandayken ekranın sağ-altına yapışır; Claude gizliyken merkeze doğru kayar. Başka hiçbir davranış yok — hook yok, bildirim yok, durum makinesi yok. Tamamen dekorasyon.
+
+## Gereksinimler
+
+- macOS 13+
+- Swift 5.9+ (Xcode komut satırı araçları)
+
+## Kurulum
+
+```sh
+git clone https://github.com/Ohualtex/Claudet.git ~/Desktop/Claudet
+cd ~/Desktop/Claudet
+
+# .app bundle'ını derle
+./scripts/make-app.sh
+
+# Başlat
+open build/Claudet.app
+```
+
+`make-app.sh`, `build/Claudet.app` dosyasını üretir (bundle id `desktop.claudet.pet`, Dock'ta görünmemesi için `LSUIElement`) ve Launch Services'e kaydeder.
+
+Bundle yapmadan hızlı geliştirme için `./scripts/run.sh` kullan — `swift build -c release` ile `/tmp/claudet-build` altında derler ve binary'yi doğrudan çalıştırır.
+
+## Nasıl çalışır
+
+`PetView` bir frame timer çalıştırır ve `idle` sprite frame'lerini sonsuza kadar döndürür (gözler açık ↔ göz kırpma). `ClaudeAppMonitor`, `NSWorkspace` aktivasyon olaylarını izler ve Claude masaüstü uygulaması ön plana geldiğinde veya ön plandan çıktığında borderless floating pencereyi yeniden konumlandırır.
+
+## Sprite'lar
+
+Tüm sprite'lar `Sources/Claudet/Sprites.swift` içinde, 24×15 grid üzerinde düz string array'leri olarak yer alır:
+
+```
+. = boş     O = vücut (coral)   E = göz/koyu
+```
+
+Yalnızca üç renk — kenar (rim) yok, iç gölge yok, alt karartma yok. Vücut, orijinal Claude Code tanıtım videosundan alınan `rgb(216, 118, 85)` örneği; göz `rgb(12, 12, 12)`.
+
+## Proje yapısı
+
+```
+Package.swift                  Swift package manifesti
+Sources/Claudet/
+  main.swift                   NSApplication giriş noktası
+  AppDelegate.swift            pencere + monitor + status item bağlantıları
+  PetWindow.swift              borderless transparan floating NSWindow
+  PetView.swift                pixel render + frame timer + sağ-tık menü
+  Sprites.swift                sprite frame'leri + palet
+  ClaudeAppMonitor.swift       Claude masaüstü uygulamasının ön planını izler
+scripts/
+  run.sh                       geliştirme için build & run
+  make-app.sh                  .app bundle derler
+```
+
+## Çıkış
+
+Pet'e sağ-tık → **Quit Claude't**, ya da menü çubuğundaki 🟧 simgesine tıkla → **Quit**.
+
+## Notlar
+
+- Build yolu varsayılan olarak `/tmp/claudet-build`; Spotlight/iCloud-yönetimli klasörler Swift'in SQLite tabanlı build cache'ini bozabildiği için. `CLAUDET_BUILD_DIR` ile override edilebilir.
+- Pencere `[.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenAuxiliary]` collection behavior'ını kullanır; böylece pet Space'ler arasında seninle dolaşır, Mission Control'e veya pencere döngüsüne takılmaz.
