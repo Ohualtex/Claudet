@@ -1,28 +1,10 @@
 import AppKit
 
-// Pixel-art sprites of the official Claude Code mascot, traced from the
-// marketing video frames in /tmp/ref2_close/char_f*.png.
-//
-// Strict styling (per user feedback):
-//   - One flat coral body color. NO rim, NO inner shadow, NO underside
-//     darkening.
-//   - Eyes are simple 2×2 dark blocks, near the top of the head.
-//   - Arms are 3×3 dark-coral blocks extending from each side of the
-//     body, sitting just below the eye row.
-//   - Legs are 1 cell wide × 2 rows tall, four legs with a wider middle gap.
-//
-// Layout (canvas 24 cols × 15 rows, each cell ≈ 1 art-pixel of source):
-//   Body proper: cols 6-17 (12 wide).
-//   Eyes (2×2): cols 7-8 and 15-16, rows 2-3.
-//   Arms (3×3 each side): cols 3-5 (left) and 18-20 (right), rows 4-6.
-//   Legs (1 cell × 2 rows × 4 legs): cols 6, 9, 14, 17, rows 10-11.
+// Pixel-art sprites for the Claudet pet, drawn on a 24×15 cell grid.
+// Each cell renders as a square of `pixelSize` points (see PetView).
 
 enum PetState: String {
     case idle
-    case working
-    case done
-    case wander
-    case sleep
 }
 
 enum SpriteCell: Character {
@@ -53,7 +35,6 @@ struct SpriteFrame {
 enum Sprites {
     // ----- IDLE: standing forward, blink -----
     static let idle: [SpriteFrame] = [
-        // Eyes open
         SpriteFrame(rows: [
             "........................",
             "......OOOOOOOOOOOO......",
@@ -91,208 +72,14 @@ enum Sprites {
         ], durationMs: 110),
     ]
 
-    // ----- WORKING: hunched / squashed posture -----
-    static let working: [SpriteFrame] = [
-        // Frame 1 — hunched (whole sprite shifted 1 row down)
-        SpriteFrame(rows: [
-            "........................",
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 320),
-        // Frame 2 — head dipped further (concentration)
-        SpriteFrame(rows: [
-            "........................",
-            "........................",
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 280),
-        // Frame 3 — back to neutral hunch
-        SpriteFrame(rows: [
-            "........................",
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 320),
-    ]
-
-    // ----- DONE: hops with a sparkle, smiles -----
-    static let done: [SpriteFrame] = [
-        SpriteFrame(rows: [
-            "...........Z............",
-            "..........ZBZ...........",
-            "...........Z............",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOMMMMMMMMOOO....",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O........O........",
-            "........................",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 260),
-        SpriteFrame(rows: [
-            ".........ZBBZ...........",
-            "........ZBBBBZ..........",
-            "........ZBBBBZ..........",
-            ".........ZBBZ...........",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOMMMMMMMMOOO....",
-            "...OOOOOOOOOOOOOOOOOO...",
-            ".......O............O...",
-            "........................",
-            "........................",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 260),
-        SpriteFrame(rows: [
-            "........................",
-            "...........Z............",
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOMMMMOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 480),
-    ]
-
-    // ----- WANDER: walking, alternating legs -----
-    static let wander: [SpriteFrame] = [
-        SpriteFrame(rows: [
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O.........",
-            "......O..O....O.........",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 240),
-        SpriteFrame(rows: [
-            "........................",
-            "......OOOOOOOOOOOO......",
-            "......OEEOOOOOOEEO......",
-            "......OEEOOOOOOEEO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            ".........O....O..O......",
-            ".........O....O..O......",
-            "........................",
-            "........................",
-            "........................",
-        ], durationMs: 240),
-    ]
-
-    // ----- SLEEP: closed eyes, floating Zs -----
-    static let sleep: [SpriteFrame] = [
-        SpriteFrame(rows: [
-            "........................",
-            ".............Z..........",
-            "............Z...........",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-        ], durationMs: 800),
-        SpriteFrame(rows: [
-            "........................",
-            "............Z...........",
-            "...........Z............",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "...OOOOOOOOOOOOOOOOOO...",
-            "......OOOOOOOOOOOO......",
-            "......OOOOOOOOOOOO......",
-            "......O..O....O..O......",
-            "......O..O....O..O......",
-            "........................",
-            "........................",
-        ], durationMs: 800),
-    ]
-
     static func frames(for state: PetState) -> [SpriteFrame] {
         switch state {
         case .idle: return idle
-        case .working: return working
-        case .done: return done
-        case .wander: return wander
-        case .sleep: return sleep
         }
     }
 }
 
-// Three-color palette: body, eye/mouth, sparkle. Body is the literal
-// rgb(216, 118, 85) sample from the source video.
+// Three-color palette retained as a starting point for future sprites.
 enum Palette {
     static let body     = NSColor(srgbRed: 216.0/255, green: 118.0/255, blue: 85.0/255, alpha: 1.0)
     static let eye      = NSColor(srgbRed: 12.0/255,  green: 12.0/255,  blue: 12.0/255, alpha: 1.0)
