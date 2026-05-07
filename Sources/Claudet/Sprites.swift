@@ -34,76 +34,88 @@ struct SpriteFrame {
 }
 
 enum Sprites {
-    // ----- IDLE: standing forward, blink / Düz duruş, göz kırpma -----
-    // Head + arms + body + legs (6-row shafts).
-    // Kafa + kollar + gövde + bacaklar (6 satırlık şaftlar).
+    // Eye row patterns. Open eyes span 4 rows (indices 4-7) — the bottom row
+    // sits at the arm-outline transition. Only these 4 rows differ between gaze states.
+    // Göz satırı paternleri. Açık gözler 4 satıra yayılır (indeks 4-7) —
+    // alttaki satır kol-kenarlık geçişine denk gelir. Sadece bu 4 satır
+    // bakış durumlarına göre değişir.
+
+    // Forward gaze: eyes centered on the head.
+    // Düz bakış: gözler kafanın merkezinde.
+    private static let fwdR4 = "...........DOOEEEWOOOOOOOOOOOOEEEWOOD..........."
+    private static let fwdR5 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
+    private static let fwdR6 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
+    private static let fwdR7 = "......DDDDDDOOEEEEOOOOOOOOOOOOEEEEOODDDDDD......"
+
+    // Blink: a single-row dark line where the eyes used to be (instead of vanishing).
+    // Göz kırpma: gözlerin olduğu yerde tek satırlık koyu çizgi (kaybolmak yerine).
+    private static let blinkClosed = "...........DOOOOOOOOOOOOOOOOOOOOOOOOD..........."
+    private static let blinkLine   = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
+    private static let blinkArm    = "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......"
+
+    // Look right: both eye blocks shift 2 cells to the right.
+    // Sağa bak: her iki göz bloğu 2 hücre sağa kayar.
+    private static let rgtR4 = "...........DOOOOEEEWOOOOOOOOOOOOEEEWD..........."
+    private static let rgtR5 = "...........DOOOOEEEEOOOOOOOOOOOOEEEED..........."
+    private static let rgtR6 = "...........DOOOOEEEEOOOOOOOOOOOOEEEED..........."
+    private static let rgtR7 = "......DDDDDDOOOOEEEEOOOOOOOOOOOOEEEEDDDDDD......"
+
+    // Look left: both eye blocks shift 2 cells to the left.
+    // Sola bak: her iki göz bloğu 2 hücre sola kayar.
+    private static let lftR4 = "...........DEEEWOOOOOOOOOOOOEEEWOOOOD..........."
+    private static let lftR5 = "...........DEEEEOOOOOOOOOOOOEEEEOOOOD..........."
+    private static let lftR6 = "...........DEEEEOOOOOOOOOOOOEEEEOOOOD..........."
+    private static let lftR7 = "......DDDDDDEEEEOOOOOOOOOOOOEEEEOOOODDDDDD......"
+
+    // Build a full 48×30 frame from the 4 eye rows + a duration.
+    // 4 göz satırından + süreden tam 48×30 frame üretir.
+    private static func frame(_ r4: String, _ r5: String, _ r6: String, _ r7: String, ms: Int) -> SpriteFrame {
+        SpriteFrame(rows: [
+            "................................................",
+            "............DDDDDDDDDDDDDDDDDDDDDDDD............",
+            "...........DLLLLLLLLLLLLLLLLLLLLLLLLD...........",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            r4, r5, r6, r7,
+            ".....DLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOLLLLLLD.....",
+            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
+            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
+            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
+            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
+            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
+            "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
+            "...........DOODDDDOODDDDDDDDOODDDDOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "...........DOOD..DOOD......DOOD..DOOD...........",
+            "............DD....DD........DD....DD............",
+            "................................................",
+            "................................................",
+        ], durationMs: ms)
+    }
+
+    // ----- IDLE: irregular blinks + occasional left/right glances.
+    // ----- IDLE: düzensiz göz kırpmalar + ara sıra sağa-sola bakış.
+    // Frame timings vary intentionally so the loop doesn't feel mechanical.
+    // Frame süreleri kasıtlı olarak değişken — döngü mekanik hissetmesin diye.
     static let idle: [SpriteFrame] = [
-        SpriteFrame(rows: [
-            "................................................",
-            "............DDDDDDDDDDDDDDDDDDDDDDDD............",
-            "...........DLLLLLLLLLLLLLLLLLLLLLLLLD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOEEEWOOOOOOOOOOOOEEEWOOD...........",
-            "...........DOOEEEEOOOOOOOOOOOOEEEEOOD...........",
-            "...........DOOEEEEOOOOOOOOOOOOEEEEOOD...........",
-            "......DDDDDDOOEEEEOOOOOOOOOOOOEEEEOODDDDDD......",
-            ".....DLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOLLLLLLD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOODDDDOODDDDDDDDOODDDDOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "............DD....DD........DD....DD............",
-            "................................................",
-            "................................................",
-        ], durationMs: 1400),
-        // Blink — eyes filled with body color
-        // Göz kırpma — gözler vücut rengiyle dolduruldu
-        SpriteFrame(rows: [
-            "................................................",
-            "............DDDDDDDDDDDDDDDDDDDDDDDD............",
-            "...........DLLLLLLLLLLLLLLLLLLLLLLLLD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......",
-            ".....DLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOLLLLLLD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            ".....DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOD.....",
-            "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOOOOOOOOOOOOOOOOOOOOOOOOD...........",
-            "...........DOODDDDOODDDDDDDDOODDDDOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "...........DOOD..DOOD......DOOD..DOOD...........",
-            "............DD....DD........DD....DD............",
-            "................................................",
-            "................................................",
-        ], durationMs: 110),
+        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1800),  // long stare / uzun bakış
+        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 130),   // blink / göz kırp
+        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1200),  // medium stare / orta bakış
+        frame(rgtR4,        rgtR5,      rgtR6,      rgtR7,      ms: 380),   // glance right / sağa bakış
+        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 2200),  // long stare / uzun bakış
+        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 110),   // quick blink / hızlı kırp
+        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 900),   // short stare / kısa bakış
+        frame(lftR4,        lftR5,      lftR6,      lftR7,      ms: 420),   // glance left / sola bakış
+        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1500),  // medium stare / orta bakış
+        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 150),   // slow blink / yavaş kırp
     ]
 }
 
