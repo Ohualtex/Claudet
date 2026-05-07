@@ -62,13 +62,60 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.title = "🟧"
+            button.image = makeMenuBarIcon()
             button.toolTip = "Claude't"
         }
         let menu = NSMenu()
         menu.addItem(withTitle: "Quit", action: #selector(quit), keyEquivalent: "q")
             .target = self
         statusItem.menu = menu
+    }
+
+    // Render the pet's idle frame as a small NSImage suitable for the
+    // menu bar status item. The shape stays identical to the desktop
+    // sprite, but the palette is collapsed to monochrome — body, outline
+    // and highlight all become white; eyes stay black. This matches the
+    // black-and-white style of other menu-bar icons.
+    // Pet'in idle frame'ini menü bar status item için küçük bir NSImage
+    // olarak render eder. Şekil masaüstü sprite'ıyla aynı kalır, palet
+    // monokroma indirgenir — vücut, kenarlık ve highlight beyaza, gözler
+    // siyaha düşer. Diğer menü bar ikonlarının siyah-beyaz tarzına uyar.
+    private func makeMenuBarIcon() -> NSImage {
+        let frame = Sprites.idle[0]
+        let pxSize = 2
+        let w = frame.width * pxSize
+        let h = frame.height * pxSize
+        let cs = CGColorSpaceCreateDeviceRGB()
+        guard let ctx = CGContext(
+            data: nil, width: w, height: h, bitsPerComponent: 8,
+            bytesPerRow: 0, space: cs,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return NSImage() }
+
+        for y in 0..<frame.height {
+            for x in 0..<frame.width {
+                let cell = frame.cell(x: x, y: y)
+                let color: NSColor?
+                switch cell {
+                case .empty:                        color = nil
+                case .body, .dark, .light:          color = .white
+                case .eye:                          color = .black
+                case .eyeHighlight:                 color = .white
+                }
+                guard let c = color else { continue }
+                ctx.setFillColor(c.cgColor)
+                ctx.fill(CGRect(
+                    x: x * pxSize,
+                    y: (frame.height - 1 - y) * pxSize,
+                    width: pxSize, height: pxSize
+                ))
+            }
+        }
+
+        guard let cg = ctx.makeImage() else { return NSImage() }
+        let displayH: CGFloat = 18
+        let displayW = displayH * CGFloat(frame.width) / CGFloat(frame.height)
+        return NSImage(cgImage: cg, size: NSSize(width: displayW, height: displayH))
     }
 
     @objc private func quit() {
