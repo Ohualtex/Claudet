@@ -1,8 +1,8 @@
 # Claudet
 
-A tiny pixel-art pet that sits in the corner of your macOS desktop and quietly works alongside you.
+A tiny pixel-art pet that sits in the corner of your macOS desktop and blinks at you.
 
-The pet snaps to the lower-right of the screen when the Claude desktop app is in the foreground, and drifts toward the centre when Claude is hidden. It cycles through an `idle` loop (irregular blinks + side glances) by default, and can switch to a `working` loop traced from the official Claude Code marketing video. No hooks, no notifications — just decoration.
+The pet snaps to the lower-right of the screen when the Claude desktop app is in the foreground, and drifts toward the centre when Claude is hidden. There are no other behaviours — no hooks, no notifications, no state machine. Pure decoration.
 
 ## Requirements
 
@@ -26,33 +26,22 @@ open build/Claudet.app
 
 For a quick dev run without bundling, use `./scripts/run.sh` — it builds with `swift build -c release` into `/tmp/claudet-build` and execs the binary directly.
 
-## Switching state
-
-The pet exposes two animations:
-
-- **Idle** — eyes-open with occasional blinks and left/right glances.
-- **Working** — 42 frames traced cell-by-cell from the source video (kare\_0001..0235), played at the source's 30 fps timing.
-
-Switch by right-clicking the pet, or via the menu-bar icon. To preview the working animation immediately on launch, set `CLAUDET_AUTO_WORKING=1`.
-
 ## How it works
 
-`PetView` runs a frame timer and draws the active state's sprite frames. `ClaudeAppMonitor` watches `NSWorkspace` activation events and repositions the borderless floating window when the Claude desktop app comes forward or leaves the foreground.
+`PetView` runs a frame timer and cycles through the `idle` sprite frames forever (eyes-open ↔ blink ↔ side glance). `ClaudeAppMonitor` watches `NSWorkspace` activation events and repositions the borderless floating window when the Claude desktop app comes forward or leaves the foreground.
 
 ## Sprites
 
-All sprites live in `Sources/Claudet/Sprites.swift` (idle pose) and `Sources/Claudet/SpritesWorking.swift` (working frames) as plain string arrays on a 48×30 grid:
+All sprites live in `Sources/Claudet/Sprites.swift` as plain string arrays on a 48×30 grid:
 
 ```
 . = empty           O = body (coral)        D = outline (dark coral)
-M = mid coral       N = deep coral          L = top highlight (light coral)
-E = eye dark        W = eye highlight       G = laptop grey
-K = laptop edge dark grey
+L = top highlight   E = eye dark            W = eye highlight
 ```
 
-The body shade `rgb(216, 118, 85)` is sampled from the original Claude Code marketing video; the rest of the palette extends that with shadow / highlight steps and laptop greys for the working sequence.
+The body shade `rgb(216, 118, 85)` is sampled from the original Claude Code marketing video; the dark/light coral pair frames the silhouette, and the eye dark + eye-highlight give the pet its expression.
 
-The working frames were re-traced from `~/Desktop/Claudetpng/kare_*.png` with `scripts/trace_working.py` — keep that tool around if you want to retune palette mapping or sample a different cell size.
+The idle loop is built by combining 4 eye-row variants (forward, look-right, look-left, blink) with a single shared body template — see the `idleFrame` helper.
 
 ## Project layout
 
@@ -64,12 +53,10 @@ Sources/Claudet/
   PetWindow.swift              borderless transparent floating NSWindow
   PetView.swift                pixel renderer + frame timer + right-click menu
   ClaudeAppMonitor.swift       tracks Claude desktop app foreground
-  Sprites.swift                shared types + idle frames + palette
-  SpritesWorking.swift         42 traced working frames (auto-generated)
+  Sprites.swift                shared types, palette, idle frames
 scripts/
   run.sh                       build & run for development
   make-app.sh                  build the .app bundle
-  trace_working.py             re-trace SpritesWorking.swift from raw PNGs
 reference/                     idle pose reference renders + palette swatch
 ```
 
@@ -86,9 +73,9 @@ Right-click the pet → **Quit Claude't**, or click the menu-bar 🟧 icon → *
 
 # Claudet (Türkçe)
 
-macOS masaüstünüzün köşesinde sessizce sizinle çalışan minik bir pixel-art evcil hayvan.
+macOS masaüstünüzün köşesinde durup size göz kırpan minik bir pixel-art evcil hayvan.
 
-Pet, Claude masaüstü uygulaması ön plandayken ekranın sağ-altına yapışır; Claude gizliyken merkeze doğru kayar. Varsayılan olarak `idle` döngüsünü oynatır (düzensiz göz kırpmalar + yan bakışlar) ve resmi Claude Code tanıtım videosundan trace edilmiş `working` döngüsüne geçebilir. Hook yok, bildirim yok — sadece dekorasyon.
+Pet, Claude masaüstü uygulaması ön plandayken ekranın sağ-altına yapışır; Claude gizliyken merkeze doğru kayar. Başka hiçbir davranış yok — hook yok, bildirim yok, durum makinesi yok. Tamamen dekorasyon.
 
 ## Gereksinimler
 
@@ -112,33 +99,22 @@ open build/Claudet.app
 
 Bundle yapmadan hızlı geliştirme için `./scripts/run.sh` kullan — `swift build -c release` ile `/tmp/claudet-build` altında derler ve binary'yi doğrudan çalıştırır.
 
-## Durum değiştirme
-
-Pet'in iki animasyonu var:
-
-- **Idle** — gözler açık, ara sıra göz kırpma ve sağa/sola bakış.
-- **Working** — kaynak videodan (kare\_0001..0235) hücre-hücre trace edilmiş 42 kare, 30 fps tempoda.
-
-Pet'e sağ-tıklayarak veya menü çubuğu ikonundan değiştirilir. Working animasyonunu uygulama açılır açılmaz görmek için `CLAUDET_AUTO_WORKING=1` ortam değişkenini ayarla.
-
 ## Nasıl çalışır
 
-`PetView` bir frame timer çalıştırır ve aktif durumun sprite frame'lerini çizer. `ClaudeAppMonitor`, `NSWorkspace` aktivasyon olaylarını izler ve Claude masaüstü uygulaması ön plana geldiğinde veya ön plandan çıktığında borderless floating pencereyi yeniden konumlandırır.
+`PetView` bir frame timer çalıştırır ve `idle` sprite frame'lerini sonsuza kadar döndürür (gözler açık ↔ göz kırpma ↔ yan bakış). `ClaudeAppMonitor`, `NSWorkspace` aktivasyon olaylarını izler ve Claude masaüstü uygulaması ön plana geldiğinde veya ön plandan çıktığında borderless floating pencereyi yeniden konumlandırır.
 
 ## Sprite'lar
 
-Tüm sprite'lar `Sources/Claudet/Sprites.swift` (idle) ve `Sources/Claudet/SpritesWorking.swift` (working) içinde, 48×30 grid üzerinde düz string array'leri olarak yer alır:
+Tüm sprite'lar `Sources/Claudet/Sprites.swift` içinde, 48×30 grid üzerinde düz string array'leri olarak yer alır:
 
 ```
 . = boş             O = vücut (coral)       D = kontur (koyu coral)
-M = orta coral      N = en koyu coral       L = üst highlight (açık coral)
-E = göz koyu        W = göz parlaması       G = laptop grisi
-K = laptop kenarı koyu gri
+L = üst highlight   E = göz koyu            W = göz parlaması
 ```
 
-Vücut tonu `rgb(216, 118, 85)` orijinal Claude Code tanıtım videosundan alınmıştır; paletin geri kalanı bunu gölge/highlight adımları ve working sekansı için laptop grileriyle genişletir.
+Vücut tonu `rgb(216, 118, 85)` orijinal Claude Code tanıtım videosundan alınmıştır; koyu/açık coral çifti silueti çerçeveler, göz koyu + parlama ise pet'e ifadesini verir.
 
-Working frame'leri `~/Desktop/Claudetpng/kare_*.png` dosyalarından `scripts/trace_working.py` ile yeniden üretildi — palet eşlemesini ayarlamak veya farklı bir cell boyutu denemek istersen bu aracı sakla.
+Idle döngüsü 4 göz-satırı varyantını (düz, sağa, sola, kırp) tek bir ortak vücut şablonuyla birleştirilerek kurulur — `idleFrame` yardımcısına bak.
 
 ## Proje yapısı
 
@@ -150,12 +126,10 @@ Sources/Claudet/
   PetWindow.swift              borderless transparan floating NSWindow
   PetView.swift                pixel render + frame timer + sağ-tık menü
   ClaudeAppMonitor.swift       Claude masaüstü uygulamasının ön planını izler
-  Sprites.swift                ortak tipler + idle frame'ler + palet
-  SpritesWorking.swift         42 trace edilmiş working frame (otomatik üretildi)
+  Sprites.swift                ortak tipler, palet, idle frame'leri
 scripts/
   run.sh                       geliştirme için build & run
   make-app.sh                  .app bundle derler
-  trace_working.py             SpritesWorking.swift'i ham PNG'lerden yeniden üretir
 reference/                     idle poz referans render'ları + palet örneği
 ```
 

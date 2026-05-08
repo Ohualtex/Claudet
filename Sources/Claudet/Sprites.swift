@@ -2,19 +2,13 @@ import AppKit
 
 // Pixel-art sprites for the Claudet pet, drawn on a 48×30 cell grid.
 // Each cell renders as a square of `pixelSize` points (see PetView).
-// The 9-colour palette covers the coral body in three shades, an outline,
-// a top highlight, two eye tones (dark + white pop), and two laptop greys.
+// Five-colour palette: coral body, dark coral outline, light coral
+// highlight, near-black eye, and an off-white eye-pop.
 //
 // Claudet pet'i için pixel-art sprite'lar, 48×30 hücreli grid üzerinde
 // çizilir. Her hücre `pixelSize` puanlık bir kare olarak render edilir
-// (bkz. PetView). 9 renkli palet üç tonlu coral gövde, kontur, üst
-// highlight, iki göz tonu (koyu + beyaz parlama) ve iki laptop grisi
-// içerir.
-
-enum PetState: String {
-    case idle
-    case working
-}
+// (bkz. PetView). Beş renkli palet: coral gövde, koyu coral kontur,
+// açık coral highlight, neredeyse-siyah göz ve kırık-beyaz parlama.
 
 enum SpriteCell: Character {
     case empty = "."         // transparent / şeffaf
@@ -23,10 +17,6 @@ enum SpriteCell: Character {
     case light = "L"         // top-edge highlight / üst kenar highlight
     case eye = "E"           // dark eye / koyu göz
     case eyeHighlight = "W"  // small white highlight in eye / gözdeki küçük beyaz parlaklık
-    case bodyMid = "M"       // mid-tone coral between body and dark / body ile dark arası coral
-    case bodyDeep = "N"      // deepest coral shadow / en koyu coral gölge
-    case gray = "G"          // laptop body gray / laptop gövde grisi
-    case grayDark = "K"      // laptop edge dark gray / laptop kenarı koyu gri
 }
 
 struct SpriteFrame {
@@ -127,16 +117,6 @@ enum Sprites {
         idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 1500),
         idleFrame(blinkClosed, blinkLine, blinkClosed, blinkArm, ms: 150),
     ]
-
-    // ----- WORKING: re-traced from official video frames (defined in SpritesWorking.swift) -----
-    // ----- WORKING: resmi video karelerinden yeniden trace edildi (SpritesWorking.swift'te tanımlı) -----
-
-    static func frames(for state: PetState) -> [SpriteFrame] {
-        switch state {
-        case .idle:    return idle
-        case .working: return workingFrames
-        }
-    }
 }
 
 enum Palette {
@@ -151,13 +131,6 @@ enum Palette {
     // Off-white eye highlight / Kırık beyaz göz parlaklığı
     static let eyeHighlight = NSColor(srgbRed: 245.0/255, green: 245.0/255, blue: 245.0/255, alpha: 1.0)
 
-    // Extended palette sampled from the video frames (only used in working state).
-    // Video frame'lerinden örneklenmiş genişletilmiş palet (yalnızca working'de kullanılır).
-    static let bodyMid      = NSColor(srgbRed: 176.0/255, green:  84.0/255, blue:  55.0/255, alpha: 1.0)
-    static let bodyDeep     = NSColor(srgbRed: 153.0/255, green:  60.0/255, blue:  30.0/255, alpha: 1.0)
-    static let gray         = NSColor(srgbRed: 118.0/255, green: 118.0/255, blue: 118.0/255, alpha: 1.0)
-    static let grayDark     = NSColor(srgbRed:  88.0/255, green:  88.0/255, blue:  88.0/255, alpha: 1.0)
-
     static func color(for cell: SpriteCell) -> NSColor? {
         switch cell {
         case .empty:        return nil
@@ -166,10 +139,6 @@ enum Palette {
         case .light:        return light
         case .eye:          return eye
         case .eyeHighlight: return eyeHighlight
-        case .bodyMid:      return bodyMid
-        case .bodyDeep:     return bodyDeep
-        case .gray:         return gray
-        case .grayDark:     return grayDark
         }
     }
 }

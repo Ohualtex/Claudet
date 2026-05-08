@@ -5,8 +5,7 @@ final class PetView: NSView {
         didSet { needsDisplay = true }
     }
 
-    private(set) var state: PetState = .idle
-    private var frames: [SpriteFrame] = Sprites.frames(for: .idle)
+    private let frames: [SpriteFrame] = Sprites.idle
     private var frameIndex: Int = 0
     private var frameTimer: Timer?
 
@@ -20,17 +19,6 @@ final class PetView: NSView {
     }
 
     required init?(coder: NSCoder) { fatalError() }
-
-    // Switch the running animation to a different state.
-    // Çalışan animasyonu farklı bir duruma geçir.
-    func transition(to newState: PetState) {
-        guard newState != state else { return }
-        state = newState
-        frames = Sprites.frames(for: newState)
-        frameIndex = 0
-        needsDisplay = true
-        scheduleNextFrame()
-    }
 
     private func scheduleNextFrame() {
         frameTimer?.invalidate()
@@ -84,20 +72,11 @@ final class PetView: NSView {
     // görünmese bile uygulamadan çıkılabilsin diye.
     override func menu(for event: NSEvent) -> NSMenu? {
         let menu = NSMenu()
-        let idleItem = NSMenuItem(title: "Idle", action: #selector(setIdle), keyEquivalent: "")
-        idleItem.target = self
-        menu.addItem(idleItem)
-        let workingItem = NSMenuItem(title: "Working", action: #selector(setWorking), keyEquivalent: "")
-        workingItem.target = self
-        menu.addItem(workingItem)
-        menu.addItem(.separator())
         let quitItem = NSMenuItem(title: "Quit Claude\u{2019}t", action: #selector(quitApp), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
         return menu
     }
 
-    @objc private func setIdle()    { transition(to: .idle) }
-    @objc private func setWorking() { transition(to: .working) }
-    @objc private func quitApp()    { NSApp.terminate(nil) }
+    @objc private func quitApp() { NSApp.terminate(nil) }
 }
