@@ -2,11 +2,14 @@ import AppKit
 
 // Pixel-art sprites for the Claudet pet, drawn on a 48×30 cell grid.
 // Each cell renders as a square of `pixelSize` points (see PetView).
-// Claudet pet'i için pixel-art sprite'lar, 48×30 hücreli grid üzerinde çizilir.
-// Her hücre `pixelSize` puanlık bir kare olarak render edilir (bkz. PetView).
+// The 9-colour palette covers the coral body in three shades, an outline,
+// a top highlight, two eye tones (dark + white pop), and two laptop greys.
 //
-// 10-renkli palet:  body / dark outline / light highlight / eye / eye-highlight
-// 10 renkli palet:    body / koyu kenarlık / açık highlight / göz / göz parlaması
+// Claudet pet'i için pixel-art sprite'lar, 48×30 hücreli grid üzerinde
+// çizilir. Her hücre `pixelSize` puanlık bir kare olarak render edilir
+// (bkz. PetView). 9 renkli palet üç tonlu coral gövde, kontur, üst
+// highlight, iki göz tonu (koyu + beyaz parlama) ve iki laptop grisi
+// içerir.
 
 enum PetState: String {
     case idle
@@ -22,7 +25,7 @@ enum SpriteCell: Character {
     case eyeHighlight = "W"  // small white highlight in eye / gözdeki küçük beyaz parlaklık
     case bodyMid = "M"       // mid-tone coral between body and dark / body ile dark arası coral
     case bodyDeep = "N"      // deepest coral shadow / en koyu coral gölge
-    case gray = "G"           // laptop body gray / laptop gövde grisi
+    case gray = "G"          // laptop body gray / laptop gövde grisi
     case grayDark = "K"      // laptop edge dark gray / laptop kenarı koyu gri
 }
 
@@ -75,17 +78,6 @@ enum Sprites {
     private static let lftR5 = "...........DEEEEOOOOOOOOOOOOEEEEOOOOD..........."
     private static let lftR6 = "...........DEEEEOOOOOOOOOOOOEEEEOOOOD..........."
     private static let lftR7 = "......DDDDDDEEEEOOOOOOOOOOOOEEEEOOOODDDDDD......"
-
-    // Look down: eye block shifts to the lower half of the 4-row band
-    // and the W highlight is dropped since the pupil faces away from us.
-    // Used for the working state — pet is focused on something below.
-    // Aşağı bakış: göz bloğu 4 satırlık bandın alt yarısına kayar ve
-    // bakış aşağı olduğu için W parlaması kaldırılır. Working durumunda
-    // kullanılır — pet aşağıdaki bir şeye odaklanmış.
-    private static let dwnR4 = "...........DOOOOOOOOOOOOOOOOOOOOOOOOD..........."
-    private static let dwnR5 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
-    private static let dwnR6 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
-    private static let dwnR7 = "......DDDDDDOOEEEEOOOOOOOOOOOOEEEEOODDDDDD......"
 
     // Build a full 48×30 idle frame from 4 eye rows + a duration.
     // 4 göz satırından + süreden tam 48×30 idle frame üretir.

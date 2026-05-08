@@ -19,8 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Dock simgesini gizle — bu bir masaüstü aksesuarı, normal uygulama değil.
         NSApp.setActivationPolicy(.accessory)
 
-        // Tight fit around 24×15 × pixelSize 4 = 96×60 sprite, plus a bit of padding.
-        // 24×15 × pixelSize 4 = 96×60 sprite'a sıkı oturuyor, biraz dolgu payı var.
+        // Tight fit around 48×30 × pixelSize 2 = 96×60 sprite, plus a bit of padding.
+        // 48×30 × pixelSize 2 = 96×60 sprite'a sıkı oturuyor, biraz dolgu payı var.
         let size = NSSize(width: 110, height: 75)
         window = PetWindow(size: size)
         window.orderFrontRegardless()
