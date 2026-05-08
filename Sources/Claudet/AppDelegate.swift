@@ -6,6 +6,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let claudeMonitor = ClaudeAppMonitor()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Auto-transition to working after launch when CLAUDET_AUTO_WORKING is set.
+        // Useful for previewing the working animation without driving the menu.
+        // CLAUDET_AUTO_WORKING set edildiğinde lansmandan sonra otomatik
+        // working'e geç. Menüyü tetiklemeden working animasyonunu önizleme için.
+        if ProcessInfo.processInfo.environment["CLAUDET_AUTO_WORKING"] != nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                self?.window.petView.transition(to: .working)
+            }
+        }
         // Hide Dock icon — this is a desktop accessory, not a regular app.
         // Dock simgesini gizle — bu bir masaüstü aksesuarı, normal uygulama değil.
         NSApp.setActivationPolicy(.accessory)
@@ -66,6 +75,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.toolTip = "Claude't"
         }
         let menu = NSMenu()
+        menu.addItem(withTitle: "Idle", action: #selector(setIdle), keyEquivalent: "")
+            .target = self
+        menu.addItem(withTitle: "Working", action: #selector(setWorking), keyEquivalent: "")
+            .target = self
+        menu.addItem(.separator())
         menu.addItem(withTitle: "Quit", action: #selector(quit), keyEquivalent: "q")
             .target = self
         statusItem.menu = menu
@@ -97,10 +111,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 let cell = frame.cell(x: x, y: y)
                 let color: NSColor?
                 switch cell {
-                case .empty:                        color = nil
-                case .body, .dark, .light:          color = .white
-                case .eye:                          color = .black
-                case .eyeHighlight:                 color = .white
+                case .empty:
+                    color = nil
+                case .body, .dark, .light, .bodyMid, .bodyDeep, .gray, .grayDark:
+                    color = .white
+                case .eye:
+                    color = .black
+                case .eyeHighlight:
+                    color = .white
                 }
                 guard let c = color else { continue }
                 ctx.setFillColor(c.cgColor)
@@ -117,6 +135,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let displayW = displayH * CGFloat(frame.width) / CGFloat(frame.height)
         return NSImage(cgImage: cg, size: NSSize(width: displayW, height: displayH))
     }
+
+    @objc private func setIdle()    { window.petView.transition(to: .idle) }
+    @objc private func setWorking() { window.petView.transition(to: .working) }
 
     @objc private func quit() {
         NSApp.terminate(nil)

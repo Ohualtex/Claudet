@@ -5,16 +5,25 @@ import AppKit
 // Claudet pet'i için pixel-art sprite'lar, 48×30 hücreli grid üzerinde çizilir.
 // Her hücre `pixelSize` puanlık bir kare olarak render edilir (bkz. PetView).
 //
-// 5-colour palette:  body / dark outline / light highlight / eye / eye-highlight
-// 5 renkli palet:    body / koyu kenarlık / açık highlight / göz / göz parlaması
+// 10-renkli palet:  body / dark outline / light highlight / eye / eye-highlight
+// 10 renkli palet:    body / koyu kenarlık / açık highlight / göz / göz parlaması
+
+enum PetState: String {
+    case idle
+    case working
+}
 
 enum SpriteCell: Character {
-    case empty = "."
-    case body = "O"
+    case empty = "."         // transparent / şeffaf
+    case body = "O"          // main coral body / ana coral vücut
     case dark = "D"          // outline + shadow / kenarlık + gölge
     case light = "L"         // top-edge highlight / üst kenar highlight
     case eye = "E"           // dark eye / koyu göz
     case eyeHighlight = "W"  // small white highlight in eye / gözdeki küçük beyaz parlaklık
+    case bodyMid = "M"       // mid-tone coral between body and dark / body ile dark arası coral
+    case bodyDeep = "N"      // deepest coral shadow / en koyu coral gölge
+    case gray = "G"           // laptop body gray / laptop gövde grisi
+    case grayDark = "K"      // laptop edge dark gray / laptop kenarı koyu gri
 }
 
 struct SpriteFrame {
@@ -47,8 +56,8 @@ enum Sprites {
     private static let fwdR6 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
     private static let fwdR7 = "......DDDDDDOOEEEEOOOOOOOOOOOOEEEEOODDDDDD......"
 
-    // Blink: a single-row dark line where the eyes used to be (instead of vanishing).
-    // Göz kırpma: gözlerin olduğu yerde tek satırlık koyu çizgi (kaybolmak yerine).
+    // Blink: a single-row dark line where the eyes used to be.
+    // Göz kırpma: gözlerin olduğu yerde tek satırlık koyu çizgi.
     private static let blinkClosed = "...........DOOOOOOOOOOOOOOOOOOOOOOOOD..........."
     private static let blinkLine   = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
     private static let blinkArm    = "......DDDDDDOOOOOOOOOOOOOOOOOOOOOOOODDDDDD......"
@@ -67,9 +76,20 @@ enum Sprites {
     private static let lftR6 = "...........DEEEEOOOOOOOOOOOOEEEEOOOOD..........."
     private static let lftR7 = "......DDDDDDEEEEOOOOOOOOOOOOEEEEOOOODDDDDD......"
 
-    // Build a full 48×30 frame from the 4 eye rows + a duration.
-    // 4 göz satırından + süreden tam 48×30 frame üretir.
-    private static func frame(_ r4: String, _ r5: String, _ r6: String, _ r7: String, ms: Int) -> SpriteFrame {
+    // Look down: eye block shifts to the lower half of the 4-row band
+    // and the W highlight is dropped since the pupil faces away from us.
+    // Used for the working state — pet is focused on something below.
+    // Aşağı bakış: göz bloğu 4 satırlık bandın alt yarısına kayar ve
+    // bakış aşağı olduğu için W parlaması kaldırılır. Working durumunda
+    // kullanılır — pet aşağıdaki bir şeye odaklanmış.
+    private static let dwnR4 = "...........DOOOOOOOOOOOOOOOOOOOOOOOOD..........."
+    private static let dwnR5 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
+    private static let dwnR6 = "...........DOOEEEEOOOOOOOOOOOOEEEEOOD..........."
+    private static let dwnR7 = "......DDDDDDOOEEEEOOOOOOOOOOOOEEEEOODDDDDD......"
+
+    // Build a full 48×30 idle frame from 4 eye rows + a duration.
+    // 4 göz satırından + süreden tam 48×30 idle frame üretir.
+    private static func idleFrame(_ r4: String, _ r5: String, _ r6: String, _ r7: String, ms: Int) -> SpriteFrame {
         SpriteFrame(rows: [
             "................................................",
             "............DDDDDDDDDDDDDDDDDDDDDDDD............",
@@ -101,22 +121,30 @@ enum Sprites {
         ], durationMs: ms)
     }
 
-    // ----- IDLE: irregular blinks + occasional left/right glances.
-    // ----- IDLE: düzensiz göz kırpmalar + ara sıra sağa-sola bakış.
-    // Frame timings vary intentionally so the loop doesn't feel mechanical.
-    // Frame süreleri kasıtlı olarak değişken — döngü mekanik hissetmesin diye.
+    // ----- IDLE: irregular blinks + occasional left/right glances -----
+    // ----- IDLE: düzensiz göz kırpmalar + ara sıra sağa-sola bakış -----
     static let idle: [SpriteFrame] = [
-        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1800),  // long stare / uzun bakış
-        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 130),   // blink / göz kırp
-        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1200),  // medium stare / orta bakış
-        frame(rgtR4,        rgtR5,      rgtR6,      rgtR7,      ms: 380),   // glance right / sağa bakış
-        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 2200),  // long stare / uzun bakış
-        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 110),   // quick blink / hızlı kırp
-        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 900),   // short stare / kısa bakış
-        frame(lftR4,        lftR5,      lftR6,      lftR7,      ms: 420),   // glance left / sola bakış
-        frame(fwdR4,        fwdR5,      fwdR6,      fwdR7,      ms: 1500),  // medium stare / orta bakış
-        frame(blinkClosed,  blinkLine,  blinkClosed, blinkArm,  ms: 150),   // slow blink / yavaş kırp
+        idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 1800),
+        idleFrame(blinkClosed, blinkLine, blinkClosed, blinkArm, ms: 130),
+        idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 1200),
+        idleFrame(rgtR4, rgtR5, rgtR6, rgtR7, ms: 380),
+        idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 2200),
+        idleFrame(blinkClosed, blinkLine, blinkClosed, blinkArm, ms: 110),
+        idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 900),
+        idleFrame(lftR4, lftR5, lftR6, lftR7, ms: 420),
+        idleFrame(fwdR4, fwdR5, fwdR6, fwdR7, ms: 1500),
+        idleFrame(blinkClosed, blinkLine, blinkClosed, blinkArm, ms: 150),
     ]
+
+    // ----- WORKING: re-traced from official video frames (defined in SpritesWorking.swift) -----
+    // ----- WORKING: resmi video karelerinden yeniden trace edildi (SpritesWorking.swift'te tanımlı) -----
+
+    static func frames(for state: PetState) -> [SpriteFrame] {
+        switch state {
+        case .idle:    return idle
+        case .working: return workingFrames
+        }
+    }
 }
 
 enum Palette {
@@ -131,6 +159,13 @@ enum Palette {
     // Off-white eye highlight / Kırık beyaz göz parlaklığı
     static let eyeHighlight = NSColor(srgbRed: 245.0/255, green: 245.0/255, blue: 245.0/255, alpha: 1.0)
 
+    // Extended palette sampled from the video frames (only used in working state).
+    // Video frame'lerinden örneklenmiş genişletilmiş palet (yalnızca working'de kullanılır).
+    static let bodyMid      = NSColor(srgbRed: 176.0/255, green:  84.0/255, blue:  55.0/255, alpha: 1.0)
+    static let bodyDeep     = NSColor(srgbRed: 153.0/255, green:  60.0/255, blue:  30.0/255, alpha: 1.0)
+    static let gray         = NSColor(srgbRed: 118.0/255, green: 118.0/255, blue: 118.0/255, alpha: 1.0)
+    static let grayDark     = NSColor(srgbRed:  88.0/255, green:  88.0/255, blue:  88.0/255, alpha: 1.0)
+
     static func color(for cell: SpriteCell) -> NSColor? {
         switch cell {
         case .empty:        return nil
@@ -139,6 +174,10 @@ enum Palette {
         case .light:        return light
         case .eye:          return eye
         case .eyeHighlight: return eyeHighlight
+        case .bodyMid:      return bodyMid
+        case .bodyDeep:     return bodyDeep
+        case .gray:         return gray
+        case .grayDark:     return grayDark
         }
     }
 }
