@@ -1,7 +1,13 @@
 import AppKit
 
 final class PetView: NSView {
-    var pixelSize: CGFloat = 9.0 {
+    // 1 sprite cell = 2 screen points by default. PetWindow currently
+    // sets the same value explicitly; keep the default in sync so the
+    // view renders correctly even if it's instantiated elsewhere.
+    // 1 sprite hücresi = varsayılan 2 ekran puanı. PetWindow şu anda
+    // aynı değeri açıkça atıyor; başka bir yerden oluşturulsa bile
+    // doğru render etsin diye varsayılanı senkron tutuyoruz.
+    var pixelSize: CGFloat = 2.0 {
         didSet { needsDisplay = true }
     }
 

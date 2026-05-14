@@ -8,6 +8,14 @@ import AppKit
 // "Claude" olarak tanıdığımız bundle identifier listesini açığa çıkarır,
 // böylece aynı mantık her yerde kullanılır.
 final class ClaudeAppMonitor {
+    // Bundle identifiers we treat as "the Claude desktop app". The first
+    // entry is the shipping identifier today; the other two are defensive
+    // fallbacks in case Anthropic re-keys the app under a shorter or more
+    // generic id in a future release.
+    // "Claude masaüstü uygulaması" olarak tanıdığımız bundle identifier'lar.
+    // İlk girdi bugün dağıtılan kimlik; diğer ikisi, Anthropic ileride
+    // uygulamayı daha kısa veya daha genel bir id altında yeniden
+    // yayımlarsa diye savunma amaçlı yedek.
     static let claudeBundleIDs: Set<String> = [
         "com.anthropic.claudefordesktop",
         "com.anthropic.claude",

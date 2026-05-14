@@ -71,15 +71,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = menu
     }
 
-    // Render the pet's idle frame as a small NSImage suitable for the
-    // menu bar status item. The shape stays identical to the desktop
-    // sprite, but the palette is collapsed to monochrome — body, outline
-    // and highlight all become white; eyes stay black. This matches the
-    // black-and-white style of other menu-bar icons.
-    // Pet'in idle frame'ini menü bar status item için küçük bir NSImage
-    // olarak render eder. Şekil masaüstü sprite'ıyla aynı kalır, palet
-    // monokroma indirgenir — vücut, kenarlık ve highlight beyaza, gözler
-    // siyaha düşer. Diğer menü bar ikonlarının siyah-beyaz tarzına uyar.
+    // Render the pet's idle frame as a small template NSImage for the
+    // menu bar status item. Body, outline and highlight cells become
+    // opaque black; eye and empty cells stay transparent so the eyes
+    // read as holes in the silhouette. Marking the image as a template
+    // lets AppKit recolour it automatically for the active menu-bar
+    // appearance (white on dark, black on light), so the icon stays
+    // legible in both light and dark modes.
+    // Pet'in idle frame'ini menü bar status item için küçük bir template
+    // NSImage olarak render eder. Vücut, kenarlık ve highlight hücreleri
+    // opak siyah olur; göz ve boş hücreler şeffaf kalır, böylece gözler
+    // siluet üzerinde delik gibi görünür. Image template işaretlenince
+    // AppKit onu menü çubuğunun aktif görünümüne göre otomatik
+    // renklendirir (koyuda beyaz, açıkta siyah); ikon her iki modda da
+    // okunaklı kalır.
     private func makeMenuBarIcon() -> NSImage {
         let frame = Sprites.idle[0]
         let pxSize = 2
@@ -94,30 +99,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         for y in 0..<frame.height {
             for x in 0..<frame.width {
-                let cell = frame.cell(x: x, y: y)
-                let color: NSColor?
-                switch cell {
-                case .empty:
-                    color = nil
+                switch frame.cell(x: x, y: y) {
+                case .empty, .eye:
+                    continue
                 case .body, .dark, .light, .eyeHighlight:
-                    color = .white
-                case .eye:
-                    color = .black
+                    ctx.setFillColor(NSColor.black.cgColor)
+                    ctx.fill(CGRect(
+                        x: x * pxSize,
+                        y: (frame.height - 1 - y) * pxSize,
+                        width: pxSize, height: pxSize
+                    ))
                 }
-                guard let c = color else { continue }
-                ctx.setFillColor(c.cgColor)
-                ctx.fill(CGRect(
-                    x: x * pxSize,
-                    y: (frame.height - 1 - y) * pxSize,
-                    width: pxSize, height: pxSize
-                ))
             }
         }
 
         guard let cg = ctx.makeImage() else { return NSImage() }
         let displayH: CGFloat = 18
         let displayW = displayH * CGFloat(frame.width) / CGFloat(frame.height)
-        return NSImage(cgImage: cg, size: NSSize(width: displayW, height: displayH))
+        let image = NSImage(cgImage: cg, size: NSSize(width: displayW, height: displayH))
+        image.isTemplate = true
+        return image
     }
 
     @objc private func quit() {

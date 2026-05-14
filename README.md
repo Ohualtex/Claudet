@@ -58,11 +58,12 @@ scripts/
   run.sh                       build & run for development
   make-app.sh                  build the .app bundle
 reference/                     idle pose reference renders + palette swatch
+                               (documentation only — not loaded at runtime)
 ```
 
 ## Quit
 
-Right-click the pet → **Quit Claude't**, or click the menu-bar 🟧 icon → **Quit**.
+Right-click the pet → **Quit Claude't**, or click the black-and-white pet icon in the menu bar → **Quit**.
 
 ## Notes
 
@@ -131,11 +132,12 @@ scripts/
   run.sh                       geliştirme için build & run
   make-app.sh                  .app bundle derler
 reference/                     idle poz referans render'ları + palet örneği
+                               (sadece dokümantasyon — çalışma zamanında yüklenmiyor)
 ```
 
 ## Çıkış
 
-Pet'e sağ-tık → **Quit Claude't**, ya da menü çubuğundaki 🟧 simgesine tıkla → **Quit**.
+Pet'e sağ-tık → **Quit Claude't**, ya da menü çubuğundaki siyah-beyaz pet ikonuna tıkla → **Quit**.
 
 ## Notlar
 
